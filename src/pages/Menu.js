@@ -136,18 +136,6 @@ const Menu = () => {
       .filter((group) => group.products.length > 0);
   }, [menu.categories]);
 
-  const categoryCounts = useMemo(() => {
-    return (menu.categories || []).map((category) =>
-      visibleProductsForCategory(category).length
-    );
-  }, [menu.categories]);
-
-  const totalVisibleCount = allVisibleProducts.length;
-  const activeCategoryCount =
-    selectedCategoryIndex === "all"
-      ? totalVisibleCount
-      : categoryCounts[selectedCategoryIndex] || 0;
-
   const buildImageUrl = (url) => {
     if (!url) return url;
     const params = "w=520&q=auto&f=auto";
@@ -386,30 +374,7 @@ const Menu = () => {
                 <PlateIcon />
               )}
             </div>
-            <div className="public-menu-title-copy">
-              <span className="public-menu-eyebrow">Digital menu</span>
-              <h1 style={{ fontFamily: theme.fontHeading }}>{texts.heroTitle}</h1>
-              <p>{texts.heroSubtitle}</p>
-            </div>
-          </div>
-
-          <div className="public-menu-summary-grid" aria-label="Menu summary">
-            <div className="public-menu-summary-card">
-              <span>Visible items</span>
-              <strong>{totalVisibleCount}</strong>
-            </div>
-            <div className="public-menu-summary-card">
-              <span>Selected section</span>
-              <strong>
-                {selectedCategoryIndex === "all"
-                  ? "All categories"
-                  : activeCategory?.name || "Category"}
-              </strong>
-            </div>
-            <div className="public-menu-summary-card">
-              <span>Shown now</span>
-              <strong>{activeCategoryCount}</strong>
-            </div>
+            <h1 style={{ fontFamily: theme.fontHeading }}>{texts.heroTitle}</h1>
           </div>
         </div>
         {mealSpecials.length > 0 && (
@@ -420,7 +385,6 @@ const Menu = () => {
                   key={special.id || `${special.meal}-${special.name}-${index}`}
                   className="public-special-chip"
                 >
-                  <span>{special.meal}</span>
                   <div>
                     <strong>{special.name}</strong>
                   </div>
@@ -442,11 +406,9 @@ const Menu = () => {
               onClick={() => setSelectedCategoryIndex("all")}
             >
               <span>All</span>
-              <small>{totalVisibleCount} items</small>
             </button>
             {menu.categories.map((cat, index) => {
               const isActive = index === selectedCategoryIndex;
-              const count = categoryCounts[index] || 0;
 
               return (
                 <button
@@ -458,7 +420,6 @@ const Menu = () => {
                   onClick={() => setSelectedCategoryIndex(index)}
                 >
                   <span>{cat.name}</span>
-                  <small>{count} items</small>
                 </button>
               );
             })}
